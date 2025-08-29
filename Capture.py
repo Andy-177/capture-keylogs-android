@@ -2,7 +2,11 @@ import subprocess
 import threading
 import re
 
+# 定义一个全局变量来存储最新的日志行
+global_log = None
+
 def logcat_thread(keyword, stop_event):
+    global global_log  # 声明使用全局变量
     # 启动adb logcat命令，并实时获取输出
     process = subprocess.Popen(
         ['adb', 'logcat'],
@@ -21,6 +25,7 @@ def logcat_thread(keyword, stop_event):
                 # 使用正则表达式匹配关键词
                 if re.search(keyword, line):
                     print(line.strip())
+                    global_log = line.strip()  # 更新全局变量为最新的日志行
     finally:
         # 停止adb logcat进程
         process.kill()
@@ -41,6 +46,13 @@ def main():
         stop_event.set()
         thread.join()
         print("日志捕获已停止。")
+
+    # 打印最新的日志内容
+    if global_log:
+        print("\n最新的日志内容如下：")
+        print(global_log)
+    else:
+        print("\n没有捕获到任何日志。")
 
 if __name__ == "__main__":
     main()
