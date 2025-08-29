@@ -30,7 +30,7 @@ def logcat_thread(keyword, stop_event):
         # 停止adb logcat进程
         process.kill()
 
-def main():
+def start():
     keyword = "ACC"
     stop_event = threading.Event()
 
@@ -46,13 +46,4 @@ def main():
         stop_event.set()
         thread.join()
         print("日志捕获已停止。")
-
-    # 打印最新的日志内容
-    if global_log:
-        print("\n最新的日志内容如下：")
-        print(global_log)
-    else:
-        print("\n没有捕获到任何日志。")
-
-if __name__ == "__main__":
-    main()
+    return global_log
